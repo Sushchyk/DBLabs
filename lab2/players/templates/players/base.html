@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Lab2</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'players/style.css' %}">
+</head>
+<body>
+{% include 'players/header.html' %}
+        {% block content %}
+        {% endblock %}
+</body>
+</html>

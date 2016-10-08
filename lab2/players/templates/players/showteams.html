@@ -1,0 +1,18 @@
+{% extends 'players/base.html' %}
+{% block content %}
+ <table border="1">
+   <caption>Teams</caption>
+   <tr>
+        <th>Name</th>
+        <th>Year of foundation</th>
+        <th>City</th>
+   </tr>
+    {%  for team in response.teams %}
+                <tr>
+                    <td> {{ team.full_name }} </td>
+                    <td> {{ team.found_year }} </td>
+                    <td> {{ team.city }} </td>
+                </tr>
+    {% endfor %}
+   </table>
+{% endblock %}
