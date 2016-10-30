@@ -1,0 +1,56 @@
+{% extends 'players/base.html' %}
+{% load filters %}
+{% block content %}
+<div id="addplayer">
+    <form id="addplayerform" method="POST" action="{% url 'store_player' %}">{% csrf_token %}
+        <input id="name" type="text" name="name" placeholder="Surname"> <br>
+        <input type="number" name="number" placeholder="Number"> <br>
+        <input type="number" name="price" placeholder="Transfer fee"> <br>
+        <div id="positions">
+            <label for="firstPosition">Positions: </label><br>
+            <select name="positions" id="firstPosition" form="addplayerform">
+            {%  for position in response.positions %}
+              <option value="{{ position|private:'_id' }}">{{ position.name }}</option>
+            {% endfor %}
+            </select>
+            <br>
+            <button id="add_pos" type="button"> + </button>
+            <button id="remove_pos" type="button"> - </button>
+        </div>
+        <label for="team">Choose team: </label>
+        <select form="addplayerform" id="team" name="team">
+            {%  for team in response.teams %}
+              <option value="{{ team|private:'_id' }}">{{ team.full_name }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="team">Choose country: </label>
+        <select form="addplayerform" id="country" name="country">
+            {%  for country in response.countries %}
+              <option value="{{ country|private:'_id' }}">{{ country.name }}</option>
+            {% endfor %}
+        </select><br>
+        <button type="submit" class="btn">Add</button>
+    </form>
+</div>
+<script>
+ $(document).ready(function () {
+     var margin = 3;
+     var count = 1;
+     $('#remove_pos').click(function () {
+         if (count > 1) {
+            $( ".position-choose" ).last().remove();
+            $( ".new-line" ).last().remove();
+             count--;
+         }
+     });
+     $('#add_pos').click(function () {
+         count++;
+         $('<select class="position-choose" name="positions" id="firstPosition" form="addplayerform">\
+            {%  for position in response.positions %}\
+              <option value="{{ position|private:"_id" }}">{{ position.name }}</option>\
+            {% endfor %}\
+            </select><br class="new-line">').insertBefore('#add_pos');
+     });
+ });
+ </script>
+{% endblock %}

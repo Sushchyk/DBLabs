@@ -1,0 +1,43 @@
+{% extends 'players/base.html' %}
+{% load filters %}
+{% block content %}
+<div id="editplayer">
+    <form id="editplayerform" method="POST" action="{% url 'update_player' %}">{% csrf_token %}
+        <input type="text" name="name" placeholder="Surname" value="{{ response.player.name }}"> <br>
+        <input type="number" name="number" placeholder="Number" value="{{ response.player.number }}"> <br>
+        <input type="number" name="price" placeholder="Transfer fee" value="{{ response.player.price}}"> <br>
+        {%  for player_position in response.player.position %}
+            <select name="positions" form="editplayerform">
+                {%  for position in response.positions %}
+                    {% if position|private:'_id' == player_position|private:'_id' %}
+                         <option value="{{ position|private:'_id' }}" selected>{{ position.name }}</option>
+                    {% else %}
+                        <option value="{{ position|private:'_id' }}">{{ position.name }}</option>
+                    {% endif %}
+            {% endfor %}
+            </select><br>
+        {% endfor %}
+        <label for="team">Choose team: </label>
+        <select form="editplayerform" id="team" name="team" >
+            {%  for team in response.teams %}
+                {% if team|private:'_id' == response.player.team|private:'_id' %}
+                     <option value="{{ team|private:'_id' }}" selected>{{ team.full_name }}</option>
+                {% else %}
+                    <option value="{{ team|private:'_id' }}">{{ team.full_name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select><br>
+        <label for="team">Choose country: </label>
+        <select form="editplayerform" id="country" name="country">
+            {%  for country in response.countries %}
+                {% if country|private:'_id' == response.player.country|private:'_id' %}
+                     <option value="{{ country|private:'_id' }}" selected>{{ country.name }}</option>
+                {% else %}
+                    <option value="{{ country|private:'_id' }}">{{ country.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select><br>
+         <button name="edited_player" value='{{ response.player|private:"_id"}}' type="submit">Edit</button>
+    </form>
+</div>
+{% endblock %}

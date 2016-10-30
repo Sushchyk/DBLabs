@@ -1,0 +1,85 @@
+{% extends 'players/base.html' %}
+{% block content %}
+{% load filters %}
+<a href="{% url 'create_player' %}">
+    <h2>> Add new player</h2>
+</a>
+ <table border="1">
+   <caption>Players</caption>
+   <tr>
+        <th>Number</th>
+       <th>Name</th>
+       <th>Position</th>
+        <th>Team</th>
+        <th>Country</th>
+        <th>Transfer fee</th>
+        <th>Actions</th>
+   </tr>
+    {%  for player in response.players %}
+                <tr>
+                    <td> {{ player.name }} </td>
+                    <td> {{ player.number }} </td>
+                    <td>
+                        {%  for position in player.position %}
+                            {{ position.name }}<br>
+                        {% endfor %}
+                    </td>
+                    <td> {{ player.team.full_name }} </td>
+                    <td> {{ player.country.name}} </td>
+                    <td> {{ player.price }} </td>
+                    <td>
+                        <form action="{% url 'edit_player' %}" method="POST" style="display: inline">{% csrf_token %}
+                            <button name="player" value='{{ player|private:"_id"}}' type="submit">Edit</button>
+                        </form>
+                         <form action="{% url 'delete_player' %}" method="POST" style="display: inline">{% csrf_token %}
+                            <button name="deleted_player" value='{{ player|private:"_id"}}' type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+    {% endfor %}
+   </table>
+<br>
+<table border="1">
+   <caption>Transfer fee of country</caption>
+   <tr>
+        <th>Country</th>
+        <th>Transfer fee</th>
+   </tr>
+    {%  for country in response.sum_by_country %}
+                <tr>
+                    <td> {{ country|private:"_id" }} </td>
+                    <td> {{ country.value }} </td>
+    {% endfor %}
+   </table>
+
+<br>
+
+<table border="1">
+   <caption>Transfer fee of teams</caption>
+   <tr>
+        <th>Team</th>
+        <th>Transfer fee</th>
+   </tr>
+    {%  for team in response.sum_by_team %}
+                <tr>
+                    <td> {{ team|private:"_id" }} </td>
+                    <td> {{ team.value }} </td>
+    {% endfor %}
+</table>
+<br>
+<table border="1">
+   <caption>Count of players by position</caption>
+   <tr>
+        <th>Position</th>
+        <th>Count of players</th>
+   </tr>
+    {%  for pos in response.sum_of_players_by_position %}
+                <tr>
+                    <td> {{ pos|private:"_id" }} </td>
+                    <td> {{ pos.count }} </td>
+    {% endfor %}
+</table>
+
+
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'players/base.html' %}
+{% block content %}
+<form action="/players/search" method="get">
+    <input type="text" name="search_phrase">
+    <button type="submit">Search</button>
+</form>
+<h2>Page {{ response.number }}</h2>
+    {%  for page in response.pages %}
+        {% if page == -1 %}
+            <span>...</span>
+        {% else %}
+            <a href="/players/teams/{{ page }}">{{ page }}</a>
+        {% endif %}
+    {% endfor %}
+ <table border="1">
+   <caption>Teams</caption>
+   <tr>
+        <th>Name</th>
+        <th>Year of foundation</th>
+   </tr>
+    {%  for team in response.teams %}
+                <tr>
+                    <td> {{ team.full_name }} </td>
+                    <td> {{ team.found_year }} </td>
+                </tr>
+    {% endfor %}
+   </table>
+{% endblock %}
