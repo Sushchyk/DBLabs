@@ -19,7 +19,8 @@ def countries(request):
 def createPlayer(request):
     teams_ = db.getAllTeams()
     countries_ = db.getAllCountries()
-    return render(request, 'players/addplayer.html', {'response': {'teams': teams_, 'countries': countries_}})
+    positions_ = db.getAllPositions()
+    return render(request, 'players/addplayer.html', {'response': {'positions': positions_, 'teams': teams_, 'countries': countries_}})
 
 def storePlayer(request):
     if request.method == "POST":
@@ -33,8 +34,9 @@ def editPlayer(request):
             teams_ = db.getAllTeams()
             countries_ = db.getAllCountries()
             player = db.getPlayerById(request.POST['player'])
+            positions_ = db.getAllPositions()
             return render(request, 'players/editplayer.html',
-                          {'response': {'teams': teams_, 'countries': countries_, 'player': player}})
+                          {'response': {'positions': positions_, 'teams': teams_, 'countries': countries_, 'player': player}})
 
     return HttpResponseRedirect('/players')
 

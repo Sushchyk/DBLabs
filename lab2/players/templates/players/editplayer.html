@@ -5,7 +5,18 @@
     <form id="editplayerform" method="POST" action="{% url 'update_player' %}">{% csrf_token %}
         <input type="text" name="name" placeholder="Surname" value="{{ response.player.name }}"> <br>
         <input type="number" name="number" placeholder="Number" value="{{ response.player.number }}"> <br>
-        <input type="text" name="position" placeholder="Position" value="{{ response.player.position }}"> <br>
+        <input type="number" name="price" placeholder="Transfer fee" value="{{ response.player.price}}"> <br>
+        {%  for player_position in response.player.position %}
+            <select name="positions" form="editplayerform">
+                {%  for position in response.positions %}
+                    {% if position|private:'_id' == player_position|private:'_id' %}
+                         <option value="{{ position|private:'_id' }}" selected>{{ position.name }}</option>
+                    {% else %}
+                        <option value="{{ position|private:'_id' }}">{{ position.name }}</option>
+                    {% endif %}
+            {% endfor %}
+            </select><br>
+        {% endfor %}
         <label for="team">Choose team: </label>
         <select form="editplayerform" id="team" name="team" >
             {%  for team in response.teams %}

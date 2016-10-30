@@ -24,12 +24,21 @@ class DatabaseManager:
             c['number_of_people'] = int(c['number_of_people'])
         return countries
 
+    def getAllPositions(self):
+        positions = [position for position in self.db.positions.find()]  # Return list of countries
+        return positions
+
     def insertPlayer(self, dict):
         team = self.db.teams.find_one({'_id': ObjectId(dict['team'])})
         country = self.db.countries.find_one({'_id': ObjectId(dict['country'])})
-        order = {'name': dict['name'],'number': dict['number'], 'position': dict['position'],
-                 'team': team, 'country': country}
-        self.db.players.insert(order)
+        positions = [];
+        print ', '.join(positions)
+        for position in dict.getlist('positions'):
+            newPosition = self.db.positions.find_one({'_id': ObjectId(position)})
+            positions.append(newPosition)
+        player = {'name': dict['name'],'number': dict['number'], 'position': positions,
+                 'team': team, 'country': country, 'price': dict['price']}
+        self.db.players.insert(player)
 
     def getAllPlayers(self):
         players = [player for player in self.db.players.find()]  # Return list of players
@@ -50,8 +59,12 @@ class DatabaseManager:
     def editPlayer(self, dict):
         team = self.db.teams.find_one({'_id': ObjectId(dict['team'])})
         country = self.db.countries.find_one({'_id': ObjectId(dict['country'])})
-        player = {'name': dict['name'], 'number': dict['number'], 'position': dict['position'],
-                 'team': team, 'country': country}
+        positions = [];
+        for position in dict.getlist('positions'):
+            newPosition = self.db.positions.find_one({'_id': ObjectId(position)})
+            positions.append(newPosition)
+        player = {'name': dict['name'], 'number': dict['number'], 'position': positions,
+                 'team': team, 'country': country, 'price': dict['price']}
         self.db.players.update_one({'_id': ObjectId(dict['edited_player'])}, {'$set': player })
 
 

@@ -12,15 +12,21 @@
        <th>Position</th>
         <th>Team</th>
         <th>Country</th>
+        <th>Transfer fee</th>
         <th>Actions</th>
    </tr>
     {%  for player in response.players %}
                 <tr>
                     <td> {{ player.name }} </td>
                     <td> {{ player.number }} </td>
-                    <td> {{ player.position }} </td>
+                    <td>
+                        {%  for position in player.position %}
+                            {{ position.name }}<br>
+                        {% endfor %}
+                    </td>
                     <td> {{ player.team.full_name }} </td>
                     <td> {{ player.country.name}} </td>
+                    <td> {{ player.price }} </td>
                     <td>
                         <form action="{% url 'edit_player' %}" method="POST" style="display: inline">{% csrf_token %}
                             <button name="player" value='{{ player|private:"_id"}}' type="submit">Edit</button>
