@@ -37,7 +37,7 @@ class DatabaseManager:
             newPosition = self.db.positions.find_one({'_id': ObjectId(position)})
             positions.append(newPosition)
         player = {'name': dict['name'],'number': dict['number'], 'position': positions,
-                 'team': team, 'country': country, 'price': dict['price']}
+                 'team': team, 'country': country, 'price': int(dict['price'])}
         self.db.players.insert(player)
 
     def getAllPlayers(self):
@@ -64,8 +64,54 @@ class DatabaseManager:
             newPosition = self.db.positions.find_one({'_id': ObjectId(position)})
             positions.append(newPosition)
         player = {'name': dict['name'], 'number': dict['number'], 'position': positions,
-                 'team': team, 'country': country, 'price': dict['price']}
+                 'team': team, 'country': country, 'price': int(dict['price'])}
         self.db.players.update_one({'_id': ObjectId(dict['edited_player'])}, {'$set': player })
+
+    def sumByCountry(self):
+        map = Code("""function(){
+                              emit(this.country.name, this.price);
+        		           };
+        		           """)
+
+        reduce = Code("""
+        					  function(key, valuesPrices){
+        						var sum = 0;
+        						for (var i = 0; i < valuesPrices.length; i++) {
+        						  sum += valuesPrices[i];
+        						}
+        						return sum;
+        		              };
+        		              """)
+        results = self.db.players.map_reduce(map, reduce, "sum_by_country")
+        return results.find()
+
+
+    def sumByTeam(self):
+        map = Code("""function(){
+                              emit(this.team.full_name, this.price);
+        		           };
+        		           """)
+
+        reduce = Code("""
+        					  function(key, valuesPrices){
+        						var sum = 0;
+        						for (var i = 0; i < valuesPrices.length; i++) {
+        						  sum += valuesPrices[i];
+        						}
+        						return sum;
+        		              };
+        		              """)
+        results = self.db.players.map_reduce(map, reduce, "sum_by_team")
+        return results.find()
+
+    def countOfByPlayersByPositions(self):
+        pipeline = [
+            {"$unwind": "$position"},
+            {"$group": {"_id": "$position.name", "count": {"$sum": 1}}},
+            {"$sort": SON([("count", -1)])}
+        ]
+        return list(self.db.players.aggregate(pipeline))
+
 
 
 

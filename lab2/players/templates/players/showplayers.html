@@ -38,4 +38,48 @@
                 </tr>
     {% endfor %}
    </table>
+<br>
+<table border="1">
+   <caption>Transfer fee of country</caption>
+   <tr>
+        <th>Country</th>
+        <th>Transfer fee</th>
+   </tr>
+    {%  for country in response.sum_by_country %}
+                <tr>
+                    <td> {{ country|private:"_id" }} </td>
+                    <td> {{ country.value }} </td>
+    {% endfor %}
+   </table>
+
+<br>
+
+<table border="1">
+   <caption>Transfer fee of teams</caption>
+   <tr>
+        <th>Team</th>
+        <th>Transfer fee</th>
+   </tr>
+    {%  for team in response.sum_by_team %}
+                <tr>
+                    <td> {{ team|private:"_id" }} </td>
+                    <td> {{ team.value }} </td>
+    {% endfor %}
+</table>
+<br>
+<table border="1">
+   <caption>Count of players by position</caption>
+   <tr>
+        <th>Position</th>
+        <th>Count of players</th>
+   </tr>
+    {%  for pos in response.sum_of_players_by_position %}
+                <tr>
+                    <td> {{ pos|private:"_id" }} </td>
+                    <td> {{ pos.count }} </td>
+    {% endfor %}
+</table>
+
+
+
 {% endblock %}

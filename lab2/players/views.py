@@ -52,7 +52,12 @@ def showPlayers(request):
     teams_ = db.getAllTeams()
     countries_ = db.getAllCountries()
     players_ = db.getAllPlayers()
-    return render(request, 'players/showplayers.html', {'response': {'teams': teams_, 'countries': countries_, 'players': players_}})
+    sum_by_country_ = db.sumByCountry()
+    sum_by_team_ = db.sumByTeam()
+    count_of_player_by_pos = db.countOfByPlayersByPositions()
+    return render(request, 'players/showplayers.html', {'response':
+        {'sum_of_players_by_position': count_of_player_by_pos,'sum_by_country': sum_by_country_,
+        'sum_by_team': sum_by_team_, 'countries': countries_, 'players': players_}})
 
 
 def updatePlayer(request):
