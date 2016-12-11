@@ -3,9 +3,9 @@
 {% block content %}
 <div id="addplayer">
     <form id="addplayerform" method="POST" action="{% url 'store_player' %}">{% csrf_token %}
-        <input id="name" type="text" name="name" placeholder="Surname"> <br>
-        <input type="number" name="number" placeholder="Number"> <br>
-        <input type="number" name="price" placeholder="Transfer fee"> <br>
+        <input id="name" type="text" name="name" placeholder="Surname" required> <br>
+        <input type="number" name="number" placeholder="Number" required> <br>
+        <input type="number" name="price" placeholder="Transfer fee" required> <br>
         <div id="positions">
             <label for="firstPosition">Positions: </label><br>
             <select name="positions" id="firstPosition" form="addplayerform">

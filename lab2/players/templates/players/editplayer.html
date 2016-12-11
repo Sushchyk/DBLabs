@@ -3,9 +3,9 @@
 {% block content %}
 <div id="editplayer">
     <form id="editplayerform" method="POST" action="{% url 'update_player' %}">{% csrf_token %}
-        <input type="text" name="name" placeholder="Surname" value="{{ response.player.name }}"> <br>
-        <input type="number" name="number" placeholder="Number" value="{{ response.player.number }}"> <br>
-        <input type="number" name="price" placeholder="Transfer fee" value="{{ response.player.price}}"> <br>
+        <input type="text" name="name" placeholder="Surname" value="{{ response.player.name }}" required> <br>
+        <input type="number" name="number" placeholder="Number" value="{{ response.player.number }}" > <br>
+        <input type="number" name="price" placeholder="Transfer fee" value="{{ response.player.price}}" required> <br>
         {%  for player_position in response.player.position %}
             <select name="positions" form="editplayerform">
                 {%  for position in response.positions %}
