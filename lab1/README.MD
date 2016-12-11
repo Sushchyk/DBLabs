@@ -141,7 +141,8 @@ for i in range (0,20):
 doc.write('task3.xml', xml_declaration=True, encoding='utf-8')
 ```
 ## Копії екранних форм 
-screens here
+![Screenshot 1](https://raw.githubusercontent.com/Sushchyk/DBLabs/master/lab1/screenshots/1.png)
+![Screenshot 1](https://raw.githubusercontent.com/Sushchyk/DBLabs/master/lab1/screenshots/2.png)
 ## Вміст XHTML-файлу
 
 ```
