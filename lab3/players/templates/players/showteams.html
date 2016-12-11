@@ -1,10 +1,16 @@
 {% extends 'players/base.html' %}
+{% load filters %}
 {% block content %}
-<form action="/players/search" method="get">
-    <input type="text" name="search_phrase">
+<form action="/players/teams/" method="post">
+{% csrf_token %}
+    <input type="text" name="team_name">
     <button type="submit">Search</button>
 </form>
-<h2>Page {{ response.number }}</h2>
+
+    {% if response.number == None %}
+        <h2>RESULT</h2>
+    {% else %}
+       <h2>Page {{ response.number }}</h2>
     {%  for page in response.pages %}
         {% if page == -1 %}
             <span>...</span>
@@ -12,6 +18,8 @@
             <a href="/players/teams/{{ page }}">{{ page }}</a>
         {% endif %}
     {% endfor %}
+    {% endif %}
+
  <table border="1">
    <caption>Teams</caption>
    <tr>
@@ -22,6 +30,11 @@
                 <tr>
                     <td> {{ team.full_name }} </td>
                     <td> {{ team.found_year }} </td>
+                <td>
+                    <form action="{% url 'delete_team' %}" method="POST" style="display: inline">{% csrf_token %}
+                            <button name="deleted_team" value='{{ team|private:"_id"}}' type="submit">Delete</button>
+                    </form>
+                </td>
                 </tr>
     {% endfor %}
    </table>

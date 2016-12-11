@@ -13,11 +13,7 @@ class DatabaseManager:
     def fillDb(self):
             self.db.insert('')
 
-    def getAllTeams(self):
-        teams = [team for team in self.db.teams.find().limit(100)] # Return list of teams
-        for team in teams:
-            team['found_year'] = int(team['found_year'])
-        return teams
+
 
     def getTeams(self, limit_, skip_):
         teams = [team for team in self.db.teams.find().limit(limit_).skip(skip_)]  # Return list of teams
@@ -130,6 +126,18 @@ class DatabaseManager:
             team = {'full_name': name, 'found_year': year}
             self.db.teams.insert(team)
 
+    def findTeamsByName(self, team_name):
+        #return [product for product in self.db.Product.find({'$text': {'$search': product_name}})]
+        return [team for team in self.db.teams.find(({'$text': {'$search': team_name}}))]
+
+    def getAllTeams(self):
+        teams = [team for team in self.db.teams.find().limit(100)] # Return list of teams
+        for team in teams:
+            team['found_year'] = int(team['found_year'])
+        return teams
+
+    def deleteTeam(self, id):
+        self.db.teams.delete_one({'_id': ObjectId(id)})
 
 
 

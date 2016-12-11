@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from .dbmanager import DatabaseManager
 
+
 db = DatabaseManager()
 countOfTeamsOnPage = 100
 
@@ -11,6 +12,13 @@ def index(request):
 
 
 def teams(request, num = "1"):
+    if request.method == 'POST':
+        #TODO ADD CACHE HERE
+        team_name = request.POST['team_name'].lower()
+        teams_ = db.findTeamsByName(team_name)
+        return render(request, 'players/showteams.html',
+                      {'response': {'teams': teams_}})
+
     num = int(num)
     countOfPages = db.getCountOfTeams() / countOfTeamsOnPage + 1
     teams_ = db.getTeams(countOfTeamsOnPage, (num - 1) * countOfTeamsOnPage)
@@ -19,6 +27,7 @@ def teams(request, num = "1"):
         pages = [1, 2, 3, 4, 5, -1, countOfPages - 4, countOfPages - 3, countOfPages -2, countOfPages - 1, countOfPages]
     else:
         pages = [1, 2, -1, num - 1, num, num + 1, -1,  countOfPages - 1, countOfPages]
+
     return render(request, 'players/showteams.html',
                   {'response': {'teams': teams_ , "number": num, 'pages': pages }})
 
@@ -75,3 +84,10 @@ def updatePlayer(request):
         if request.POST["edited_player"] != "":
             db.editPlayer(request.POST)
     return HttpResponseRedirect('/players')
+
+
+def deleteTeam(request):
+    if request.method == "POST":
+        if request.POST["deleted_team"] != "":
+            db.deleteTeam(request.POST["deleted_team"])
+        return HttpResponseRedirect('/players/teams')
