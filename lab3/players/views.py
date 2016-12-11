@@ -16,8 +16,9 @@ def teams(request, num = "1"):
         #TODO ADD CACHE HERE
         team_name = request.POST['team_name'].lower()
         teams_ = db.findTeamsByName(team_name)
+        search_info = ''
         return render(request, 'players/showteams.html',
-                      {'response': {'teams': teams_}})
+                      {'response': {'teams': teams_, 'search_info': search_info, 'search_phrase': request.POST['team_name']}})
 
     num = int(num)
     countOfPages = db.getCountOfTeams() / countOfTeamsOnPage + 1

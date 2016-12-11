@@ -3,12 +3,17 @@
 {% block content %}
 <form action="/players/teams/" method="post">
 {% csrf_token %}
-    <input type="text" name="team_name">
+    {% if response.search_phrase == None %}
+        <input type="text" name="team_name">
+    {% else %}
+        <input type="text" value="{{ response.search_phrase }}" name="team_name">
+    {% endif %}
     <button type="submit">Search</button>
 </form>
 
     {% if response.number == None %}
-        <h2>RESULT</h2>
+        <h2>Result of search: </h2>
+        <p> {{ response.search_info }}</p>
     {% else %}
        <h2>Page {{ response.number }}</h2>
     {%  for page in response.pages %}
