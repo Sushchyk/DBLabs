@@ -1,5 +1,5 @@
 <p align='center'>
-![header](https://raw.githubusercontent.com/Sushchyk/DBLabs/master/img/kpi.png)
+<img src="https://raw.githubusercontent.com/Sushchyk/DBLabs/master/img/kpi.png">
 </p>
 <h1 align="center">Лабораторна робота №1
 <h2 align="center">Вивчення базових операцій обробки XML-документів </h2>
