@@ -4,13 +4,144 @@
 <p align="right">Варіант 19</p>
 
 ## Вміст XSL-файлу
-text here
+```
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsl:stylesheet version="1.0"
+xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:template match="/">
+  <html>
+  <body>
+  <h2>Catalog</h2>
+  <table border="1">
+    <tr bgcolor="#9acd32">
+        <th>Title</th>
+        <th>Description</th>
+        <th>Image</th>
+        <th>Price </th>
+    </tr>
+    <xsl:for-each select="data/product">
+    <tr>
+        <td><xsl:value-of select="title"/></td>
+        <td><xsl:value-of select="description"/></td>
+        <td>
+            <img>
+                <xsl:attribute name="src">
+                    <xsl:value-of select="image"/>
+                </xsl:attribute>
+            </img>
+        </td>
+        <td><xsl:value-of select="price"/></td>
+    </tr>
+    </xsl:for-each>
+  </table>
+  </body>
+  </html>
+</xsl:template>
+</xsl:stylesheet>
+```
 ## Текст програми
-text here
+task1.py
+```
+from lxml import html
+from lxml import etree
+import requests
+import sys
+rootUrl = 'http://www.shkola.ua'
+def getTextOrImage(urls):
+    root = etree.Element('data')
+    doc = etree.ElementTree(root)
+
+    text = []
+    images = []
+
+    for item in urls:
+        page = requests.get(item)
+        tree = html.fromstring(page.content)
+        pageElement = etree.SubElement(root, 'page', adress=item)
+        text = tree.xpath('//*[text() and not(self::script)]')
+        images = tree.xpath('//img')
+
+        for item in images:
+            imageFragment = etree.SubElement(pageElement, 'fragment', type = 'image')
+            imageFragment.text = item.get("src")
+
+        for item in text:
+            if item.text != None:
+                textFragment = etree.SubElement(pageElement, 'fragment', type='text')
+                textFragment.text = item.text
+
+        doc.write('task1.xml', xml_declaration=True, encoding='utf-8')
+
+def parsePage():
+    page = requests.get(rootUrl)
+    tree = html.fromstring(page.content)
+    links = tree.xpath('//a[@href]')
+    i = 0
+    count = 0
+    length = len(links)
+    urls = []
+    while (count != 20 and i < length):
+        hrefValue = links[i].get("href")
+        if hrefValue[0] == '/':
+            urls.append(rootUrl + hrefValue)
+            print urls[len(urls) - 1]
+            count += 1
+        i += 1
+    getTextOrImage(urls)
+parsePage()
+
+```
+task2.py
+```
+from lxml import etree
+tree = etree.parse('task1.xml')
+for item in tree.xpath('//page'):
+    fragments = item.getchildren()
+    count = 0
+    for fragment in fragments:
+        if fragment.get("type") == "text":
+            count += 1
+    print item.get("adress") + " : " +  str(count)
+```
+task3.py
+```
+from lxml import etree
+from lxml import html
+import  requests
+
+def getDescription(url):
+    page = requests.get(url)
+    tree = html.fromstring(page.content)
+    #print url;
+    return tree.xpath('//div[@id="more_info_sheets"]/div[@id = "idTab1"]/p/span/text()')[0]
+
+page = requests.get('http://www.fishing-mart.com.ua/2-fishing-mart-spinningovaya-ribalka?n=20&id_category=2')
+tree = html.fromstring(page.content)
+productImages = tree.xpath('//ul[@id = "product_list"]/li/div[@class="center_block"]/a/img/@src')
+productNames = tree.xpath('//ul[@id = "product_list"]/li/div[@class="center_block"]/h3/a/text()')
+productPrices = tree.xpath('//ul[@id = "product_list"]/li/div[@class="right_block"]/div/span[@class = "price"]/text()')
+productLinks = tree.xpath('//ul[@id = "product_list"]/li/div[@class="center_block"]/h3/a/@href')
+productDescriptions = map(lambda link: getDescription(link), productLinks)
+
+root = etree.Element('data')
+doc = etree.ElementTree(root)
+for i in range (0,20):
+    productElement = etree.SubElement(root, 'product')
+    productTitle = etree.SubElement(productElement, 'title')
+    productTitle.text = productNames[i]
+    productDesc = etree.SubElement(productElement, 'description')
+    productDesc.text = productDescriptions[i][2:]
+    productImg = etree.SubElement(productElement, 'image')
+    productImg.text = productImages[i]
+    productPrice = etree.SubElement(productElement, 'price')
+    productPrice.text = productPrices[i]
+    i +=1
+doc.write('task3.xml', xml_declaration=True, encoding='utf-8')
+```
 ## Копії екранних форм 
-text here
-## Вміст XSL-файлу
-text here
+screens here
 ## Вміст XHTML-файлу
 
 ```
